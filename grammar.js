@@ -20,6 +20,7 @@ module.exports = grammar({
     $._paired_comment_content_liq,
     $.raw_content,
     $.front_matter,
+    $.doc_content,
 
     // check if scanner is in error recovery mode
     $.error_sentinel,
@@ -106,6 +107,7 @@ module.exports = grammar({
         $.style_statement,
         $.stylesheet_statement,
         $.javascript_statement,
+        $.doc_statement,
       ),
 
     _untagged_paired_statement: ($) =>
@@ -420,6 +422,9 @@ module.exports = grammar({
 
     raw_statement: ($) =>
       seq(tag('raw'), $.raw_content, optional($.raw_statement), tag('endraw')),
+
+    doc_statement: ($) =>
+      seq(tag('doc'), optional($.doc_content), tag('enddoc')),
 
     comment: ($) => choice($._inline_comment, $._paired_comment),
 

@@ -1,0 +1,77 @@
+==================
+Doc Statement Empty
+==================
+
+{% doc %}
+{% enddoc %}
+
+---
+(program
+ (doc_statement)
+ (template_content))
+
+==================
+Doc Statement with Content
+==================
+
+{% doc %}
+  This is a description of the snippet.
+
+  @param paramName {String} - Description of the parameter
+  @param anotherParam {Number} - Another parameter description
+  @example
+    {% render 'snippet-name', paramName: 'value' %}
+  @example
+    {% render 'snippet-name', paramName: 'other value', anotherParam: 42 %}
+{% enddoc %}
+
+---
+(program
+ (doc_statement
+  (doc_content))
+ (template_content))
+
+==================
+Doc Statement with Whitespace Stripping
+==================
+
+{%- doc -%}
+  @param name {String} - The name
+{%- enddoc -%}
+
+---
+(program
+ (doc_statement
+  (doc_content))
+ (template_content))
+
+==================
+Doc Statement with Description Only
+==================
+
+{% doc %}
+  This is just a description with no annotations.
+{% enddoc %}
+
+---
+(program
+ (doc_statement
+  (doc_content))
+ (template_content))
+
+==================
+Doc Statement Before Template
+==================
+
+{% doc %}
+  @param title {String} - Page title
+{% enddoc %}
+<div>{{ title }}</div>
+
+---
+(program
+ (doc_statement
+  (doc_content))
+ (template_content)
+ (identifier)
+ (template_content))

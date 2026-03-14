@@ -326,6 +326,10 @@
         {
           "type": "SYMBOL",
           "name": "javascript_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "doc_statement"
         }
       ]
     },
@@ -4204,6 +4208,93 @@
         }
       ]
     },
+    "doc_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "{%"
+                },
+                {
+                  "type": "STRING",
+                  "value": "{%-"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": "doc"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "%}"
+                },
+                {
+                  "type": "STRING",
+                  "value": "-%}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "doc_content"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "{%"
+                },
+                {
+                  "type": "STRING",
+                  "value": "{%-"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": "enddoc"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "%}"
+                },
+                {
+                  "type": "STRING",
+                  "value": "-%}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
     "comment": {
       "type": "CHOICE",
       "members": [
@@ -4513,6 +4604,10 @@
     {
       "type": "SYMBOL",
       "name": "front_matter"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "doc_content"
     },
     {
       "type": "SYMBOL",
