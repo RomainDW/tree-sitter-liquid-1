@@ -153,46 +153,65 @@ bool tree_sitter_liquid_external_scanner_scan(
         }
     }
 
-    // doc content
+    // doc content - stops at @annotations, {type}, or {% enddoc %}
     if (valid_symbols[DOC_CONTENT]) {
+        bool has_content = false;
 
         while (lexer->lookahead != 0) {
 
-            advance_ws(lexer);
-            lexer->mark_end(lexer);
-
-            if (!is_next_and_advance(lexer, '{')) {
-                continue;
-            }
-
-            if (!is_next_and_advance(lexer, '%')) {
-                continue;
-            }
-
-            if (lexer->lookahead == '-') {
-                advance(lexer);
-            }
-
-            advance_ws(lexer);
-
-            // check for "enddoc"
-            if (lexer->lookahead == 'e' && scan_str(lexer, end) && scan_str(lexer, doc_tag)) {
-
-                advance_ws(lexer);
-
-                if (lexer->lookahead == '-') {
-                    advance(lexer);
+            // stop at @ for annotations (@param, @description, @example)
+            if (lexer->lookahead == '@') {
+                if (has_content) {
+                    lexer->result_symbol = DOC_CONTENT;
+                    return true;
                 }
+                return false;
+            }
 
+            // stop at { for type annotations ({string}, {number}, etc.)
+            // or for {% enddoc %}
+            if (lexer->lookahead == '{') {
+                lexer->mark_end(lexer);
+                advance(lexer);
+
+                // check for {% enddoc %}
                 if (lexer->lookahead == '%') {
                     advance(lexer);
-                    if (lexer->lookahead == '}') {
+                    if (lexer->lookahead == '-') {
                         advance(lexer);
-                        lexer->result_symbol = DOC_CONTENT;
-                        return true;
                     }
+                    advance_ws(lexer);
+
+                    if (lexer->lookahead == 'e' && scan_str(lexer, end) && scan_str(lexer, doc_tag)) {
+                        advance_ws(lexer);
+                        if (lexer->lookahead == '-') {
+                            advance(lexer);
+                        }
+                        if (lexer->lookahead == '%') {
+                            advance(lexer);
+                            if (lexer->lookahead == '}') {
+                                advance(lexer);
+                                lexer->result_symbol = DOC_CONTENT;
+                                return has_content;
+                            }
+                        }
+                    }
+                    // not enddoc, continue
+                    has_content = true;
+                    continue;
                 }
+
+                // { not followed by % — stop for doc_type
+                if (has_content) {
+                    lexer->result_symbol = DOC_CONTENT;
+                    return true;
+                }
+                return false;
             }
+
+            advance(lexer);
+            has_content = true;
+            lexer->mark_end(lexer);
         }
     }
 

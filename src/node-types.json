@@ -524,15 +524,33 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
-      "required": true,
+      "multiple": true,
+      "required": false,
       "types": [
         {
+          "type": "doc_annotation",
+          "named": true
+        },
+        {
           "type": "doc_content",
+          "named": true
+        },
+        {
+          "type": "doc_type",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "doc_annotation",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "doc_type",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "echo_statement",
@@ -2749,6 +2767,18 @@
     "named": false
   },
   {
+    "type": "@description",
+    "named": false
+  },
+  {
+    "type": "@example",
+    "named": false
+  },
+  {
+    "type": "@param",
+    "named": false
+  },
+  {
     "type": "[",
     "named": false
   },
@@ -3013,6 +3043,10 @@
     "named": false
   },
   {
+    "type": "{",
+    "named": false
+  },
+  {
     "type": "{%",
     "named": false
   },
@@ -3038,6 +3072,10 @@
   },
   {
     "type": "|",
+    "named": false
+  },
+  {
+    "type": "}",
     "named": false
   },
   {

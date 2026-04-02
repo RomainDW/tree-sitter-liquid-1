@@ -436,9 +436,17 @@ module.exports = grammar({
     doc: ($) =>
       seq(
         concealed_tag('doc'),
-        $.doc_content,
+        repeat(choice(
+          $.doc_content,
+          $.doc_annotation,
+          $.doc_type,
+        )),
         concealed_tag('enddoc'),
       ),
+
+    doc_annotation: (_) => choice('@param', '@description', '@example'),
+
+    doc_type: (_) => seq('{', /[^}]+/, '}'),
 
     _inline_comment: ($) => tag(repeat1($._inline_comment_content)),
 

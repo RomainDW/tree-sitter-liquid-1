@@ -110,3 +110,5 @@
 
 ((doc) @comment.documentation (#set! priority 102))
 ((doc_content) @comment.documentation (#set! priority 102))
+((doc_annotation) @keyword (#set! priority 103))
+((doc_type) @type (#set! priority 103))
