@@ -21,6 +21,8 @@ module.exports = grammar({
     $.raw_content,
     $.front_matter,
     $.doc_content,
+    $.doc_param_name,
+    $.doc_example_content,
 
     // check if scanner is in error recovery mode
     $.error_sentinel,
@@ -438,13 +440,26 @@ module.exports = grammar({
         concealed_tag('doc'),
         repeat(choice(
           $.doc_content,
-          $.doc_annotation,
+          $.doc_param_annotation,
+          $.doc_description_annotation,
+          $.doc_example_annotation,
           $.doc_type,
         )),
         concealed_tag('enddoc'),
       ),
 
-    doc_annotation: (_) => choice('@param', '@description', '@example'),
+    doc_param_annotation: ($) => prec.right(seq(
+      '@param',
+      optional($.doc_type),
+      optional($.doc_param_name),
+    )),
+
+    doc_description_annotation: (_) => '@description',
+
+    doc_example_annotation: ($) => prec.right(seq(
+      '@example',
+      optional($.doc_example_content),
+    )),
 
     doc_type: (_) => seq('{', /[^}]+/, '}'),
 

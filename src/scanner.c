@@ -9,6 +9,8 @@ enum TokenType {
     RAW_CONTENT,
     FRONT_MATTER,
     DOC_CONTENT,
+    DOC_PARAM_NAME,
+    DOC_EXAMPLE_CONTENT,
     NONE
 };
 
@@ -151,6 +153,96 @@ bool tree_sitter_liquid_external_scanner_scan(
                 }
             }
         }
+    }
+
+    // doc param name - matches identifier or [identifier] after @param {type}
+    // Must be checked BEFORE doc_content so it's not consumed as text
+    if (valid_symbols[DOC_PARAM_NAME]) {
+        bool bracketed = false;
+        if (lexer->lookahead == '[') {
+            bracketed = true;
+            advance(lexer);
+        }
+        // must start with letter or underscore
+        if (iswalpha(lexer->lookahead) || lexer->lookahead == '_') {
+            advance(lexer);
+            while (iswalnum(lexer->lookahead) || lexer->lookahead == '_') {
+                advance(lexer);
+            }
+            if (bracketed) {
+                if (lexer->lookahead == ']') {
+                    advance(lexer);
+                    lexer->mark_end(lexer);
+                    lexer->result_symbol = DOC_PARAM_NAME;
+                    return true;
+                }
+                return false;
+            }
+            lexer->mark_end(lexer);
+            lexer->result_symbol = DOC_PARAM_NAME;
+            return true;
+        }
+        return false;
+    }
+
+    // doc example content - consumes everything until next @ annotation or {% enddoc %}
+    // Must be checked BEFORE doc_content so it captures the full example block
+    if (valid_symbols[DOC_EXAMPLE_CONTENT]) {
+        bool has_content = false;
+
+        while (lexer->lookahead != 0) {
+
+            // stop at @ for next annotation
+            if (lexer->lookahead == '@') {
+                if (has_content) {
+                    lexer->result_symbol = DOC_EXAMPLE_CONTENT;
+                    return true;
+                }
+                return false;
+            }
+
+            if (lexer->lookahead == '{') {
+                lexer->mark_end(lexer);
+                advance(lexer);
+
+                // check for {% enddoc %}
+                if (lexer->lookahead == '%') {
+                    advance(lexer);
+                    if (lexer->lookahead == '-') {
+                        advance(lexer);
+                    }
+                    advance_ws(lexer);
+
+                    if (lexer->lookahead == 'e' && scan_str(lexer, end) && scan_str(lexer, doc_tag)) {
+                        advance_ws(lexer);
+                        if (lexer->lookahead == '-') {
+                            advance(lexer);
+                        }
+                        if (lexer->lookahead == '%') {
+                            advance(lexer);
+                            if (lexer->lookahead == '}') {
+                                advance(lexer);
+                                lexer->result_symbol = DOC_EXAMPLE_CONTENT;
+                                return has_content;
+                            }
+                        }
+                    }
+                    // not enddoc, continue (allow {%...%} in example content)
+                    has_content = true;
+                    continue;
+                }
+
+                // allow {{ and other { in example content
+                has_content = true;
+                continue;
+            }
+
+            advance(lexer);
+            has_content = true;
+            lexer->mark_end(lexer);
+        }
+
+        return false;
     }
 
     // doc content - stops at @annotations, {type}, or {% enddoc %}

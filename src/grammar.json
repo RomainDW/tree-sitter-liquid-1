@@ -4319,7 +4319,15 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "doc_annotation"
+                "name": "doc_param_annotation"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "doc_description_annotation"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "doc_example_annotation"
               },
               {
                 "type": "SYMBOL",
@@ -4385,22 +4393,71 @@
         }
       ]
     },
-    "doc_annotation": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "@param"
-        },
-        {
-          "type": "STRING",
-          "value": "@description"
-        },
-        {
-          "type": "STRING",
-          "value": "@example"
-        }
-      ]
+    "doc_param_annotation": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@param"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "doc_type"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "doc_param_name"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "doc_description_annotation": {
+      "type": "STRING",
+      "value": "@description"
+    },
+    "doc_example_annotation": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@example"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "doc_example_content"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
     },
     "doc_type": {
       "type": "SEQ",
@@ -4706,6 +4763,14 @@
     {
       "type": "SYMBOL",
       "name": "doc_content"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "doc_param_name"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "doc_example_content"
     },
     {
       "type": "SYMBOL",

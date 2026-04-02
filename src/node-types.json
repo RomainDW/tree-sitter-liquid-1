@@ -528,11 +528,19 @@
       "required": false,
       "types": [
         {
-          "type": "doc_annotation",
+          "type": "doc_content",
           "named": true
         },
         {
-          "type": "doc_content",
+          "type": "doc_description_annotation",
+          "named": true
+        },
+        {
+          "type": "doc_example_annotation",
+          "named": true
+        },
+        {
+          "type": "doc_param_annotation",
           "named": true
         },
         {
@@ -543,9 +551,38 @@
     }
   },
   {
-    "type": "doc_annotation",
+    "type": "doc_example_annotation",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "doc_example_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "doc_param_annotation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "doc_param_name",
+          "named": true
+        },
+        {
+          "type": "doc_type",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "doc_type",
@@ -2767,10 +2804,6 @@
     "named": false
   },
   {
-    "type": "@description",
-    "named": false
-  },
-  {
     "type": "@example",
     "named": false
   },
@@ -2848,6 +2881,18 @@
   },
   {
     "type": "doc_content",
+    "named": true
+  },
+  {
+    "type": "doc_description_annotation",
+    "named": true
+  },
+  {
+    "type": "doc_example_content",
+    "named": true
+  },
+  {
+    "type": "doc_param_name",
     "named": true
   },
   {

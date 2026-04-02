@@ -22,16 +22,18 @@ Doc Tag
  (template_content)
  (doc
   (doc_content)
-  (doc_annotation)
+  (doc_description_annotation)
   (doc_content)
-  (doc_annotation)
-  (doc_type)
+  (doc_param_annotation
+   (doc_type)
+   (doc_param_name))
   (doc_content)
-  (doc_annotation)
-  (doc_type)
+  (doc_param_annotation
+   (doc_type)
+   (doc_param_name))
   (doc_content)
-  (doc_annotation)
-  (doc_content))
+  (doc_example_annotation
+   (doc_example_content)))
  (template_content))
 
 ==================
@@ -57,8 +59,9 @@ Doc Tag with Trim
 ---
 (program
  (doc
-  (doc_annotation)
-  (doc_type)
+  (doc_param_annotation
+   (doc_type)
+   (doc_param_name))
   (doc_content))
  (template_content))
 
@@ -81,7 +84,40 @@ Doc Tag Inside If
   condition: (boolean)
   consequence: (block
     (doc
-      (doc_annotation)
-      (doc_type)
+      (doc_param_annotation
+       (doc_type)
+       (doc_param_name))
       (doc_content))))
+ (template_content))
+
+==================
+Doc Tag Param Without Type
+==================
+
+{% doc %}
+  @param section_id - The section ID
+{% enddoc %}
+
+---
+(program
+ (doc
+  (doc_param_annotation
+   (doc_param_name))
+  (doc_content))
+ (template_content))
+
+==================
+Doc Tag Example With Liquid
+==================
+
+{% doc %}
+  @example
+  {% render 'product-card', product: product, sizes: '200px' %}
+{% enddoc %}
+
+---
+(program
+ (doc
+  (doc_example_annotation
+   (doc_example_content)))
  (template_content))
