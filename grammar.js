@@ -20,6 +20,7 @@ module.exports = grammar({
     $._paired_comment_content_liq,
     $.raw_content,
     $.front_matter,
+    $.doc_content,
 
     // check if scanner is in error recovery mode
     $.error_sentinel,
@@ -42,7 +43,7 @@ module.exports = grammar({
   rules: {
     program: ($) => seq(optional($.front_matter), repeat($._node)),
 
-    _node: ($) => choice($._statement, $.template_content, $.comment),
+    _node: ($) => choice($._statement, $.template_content, $.comment, $.doc),
 
     template_content: (_) => repeat1(choice(/[^{]+|\{[^{%]/, '{%%', '{{{')),
 
@@ -431,6 +432,13 @@ module.exports = grammar({
 
     comment_liq: ($) =>
       choice($._inline_comment_content, $._paired_comment_liq),
+
+    doc: ($) =>
+      seq(
+        concealed_tag('doc'),
+        $.doc_content,
+        concealed_tag('enddoc'),
+      ),
 
     _inline_comment: ($) => tag(repeat1($._inline_comment_content)),
 

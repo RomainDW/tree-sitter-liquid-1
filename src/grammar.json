@@ -1,5 +1,4 @@
 {
-  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "liquid",
   "word": "identifier",
   "rules": {
@@ -41,6 +40,10 @@
         {
           "type": "SYMBOL",
           "name": "comment"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "doc"
         }
       ]
     },
@@ -4247,6 +4250,125 @@
         }
       ]
     },
+    "doc": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "{%"
+                  },
+                  "named": false,
+                  "value": ""
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "{%-"
+                  },
+                  "named": false,
+                  "value": ""
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": "doc"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "%}"
+                  },
+                  "named": false,
+                  "value": ""
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "-%}"
+                  },
+                  "named": false,
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "doc_content"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "{%"
+                  },
+                  "named": false,
+                  "value": ""
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "{%-"
+                  },
+                  "named": false,
+                  "value": ""
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": "enddoc"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "%}"
+                  },
+                  "named": false,
+                  "value": ""
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "-%}"
+                  },
+                  "named": false,
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
     "_inline_comment": {
       "type": "SEQ",
       "members": [
@@ -4533,10 +4655,13 @@
     },
     {
       "type": "SYMBOL",
+      "name": "doc_content"
+    },
+    {
+      "type": "SYMBOL",
       "name": "error_sentinel"
     }
   ],
   "inline": [],
-  "supertypes": [],
-  "reserved": {}
+  "supertypes": []
 }

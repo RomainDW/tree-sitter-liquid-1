@@ -1,0 +1,74 @@
+==================
+Doc Tag
+==================
+
+<html>
+  {% doc %}
+    Renders an announcement message block.
+
+    @description
+    This block is designed to display a single announcement message.
+
+    @param {product} product - The product object
+    @param {string} [subtitle] - Optional secondary text
+
+    @example
+    {%- content_for 'block', type: 'announcement', id: 'message-1' -%}
+  {% enddoc %}
+</html>
+
+---
+(program
+ (template_content)
+ (doc
+  (doc_content))
+ (template_content))
+
+==================
+Doc Tag Empty
+==================
+
+{% doc %}
+{% enddoc %}
+
+---
+(program
+ (doc
+  (doc_content))
+ (template_content))
+
+==================
+Doc Tag with Trim
+==================
+
+{%- doc -%}
+  @param {string} title - The title
+{%- enddoc -%}
+
+---
+(program
+ (doc
+  (doc_content))
+ (template_content))
+
+==================
+Doc Tag Inside If
+==================
+
+<html>
+  {% if true %}
+    {% doc %}
+      @param {string} title - A title
+    {% enddoc %}
+  {% endif %}
+</html>
+
+---
+(program
+ (template_content)
+ (if_statement
+  condition: (boolean)
+  consequence: (block
+    (doc
+      (doc_content))))
+ (template_content))

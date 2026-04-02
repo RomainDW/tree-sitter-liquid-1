@@ -8,12 +8,14 @@ enum TokenType {
     PAIRED_COMMENT_CONTENT_LIQ,
     RAW_CONTENT,
     FRONT_MATTER,
+    DOC_CONTENT,
     NONE
 };
 
 const char *end = "end";
 const char *raw_tag = "raw";
 const char *comment_tag = "comment";
+const char *doc_tag = "doc";
 
 static void advance(TSLexer *lexer) {
     lexer->advance(lexer, false);
@@ -144,6 +146,49 @@ bool tree_sitter_liquid_external_scanner_scan(
 
                     if (lexer->lookahead == '}') {
                         advance(lexer);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    // doc content
+    if (valid_symbols[DOC_CONTENT]) {
+
+        while (lexer->lookahead != 0) {
+
+            advance_ws(lexer);
+            lexer->mark_end(lexer);
+
+            if (!is_next_and_advance(lexer, '{')) {
+                continue;
+            }
+
+            if (!is_next_and_advance(lexer, '%')) {
+                continue;
+            }
+
+            if (lexer->lookahead == '-') {
+                advance(lexer);
+            }
+
+            advance_ws(lexer);
+
+            // check for "enddoc"
+            if (lexer->lookahead == 'e' && scan_str(lexer, end) && scan_str(lexer, doc_tag)) {
+
+                advance_ws(lexer);
+
+                if (lexer->lookahead == '-') {
+                    advance(lexer);
+                }
+
+                if (lexer->lookahead == '%') {
+                    advance(lexer);
+                    if (lexer->lookahead == '}') {
+                        advance(lexer);
+                        lexer->result_symbol = DOC_CONTENT;
                         return true;
                     }
                 }
