@@ -437,7 +437,7 @@ module.exports = grammar({
 
     doc: ($) =>
       seq(
-        concealed_tag('doc'),
+        tag('doc'),
         repeat(choice(
           $.doc_content,
           $.doc_param_annotation,
@@ -445,7 +445,7 @@ module.exports = grammar({
           $.doc_example_annotation,
           $.doc_type,
         )),
-        concealed_tag('enddoc'),
+        tag('enddoc'),
       ),
 
     doc_param_annotation: ($) => prec.right(seq(
